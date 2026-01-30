@@ -6,12 +6,14 @@ const AUDD_API_KEY = import.meta.env.VITE_AUDD_API_KEY || 'test';
 const AUDD_API_URL = 'https://api.audd.io/';
 
 /**
- * Recognize music from audio URL
- * @param {string} audioUrl - URL to the audio file
+ * Recognize music from audio URL (including Instagram URLs)
+ * @param {string} audioUrl - URL to the audio file or Instagram Reel URL
  * @returns {Promise<Object>} Song information
  */
 export async function recognizeSong(audioUrl) {
     try {
+        console.log('🎵 Attempting to recognize song from:', audioUrl);
+
         const formData = new FormData();
         formData.append('url', audioUrl);
         formData.append('return', 'spotify,apple_music,deezer');
@@ -24,10 +26,27 @@ export async function recognizeSong(audioUrl) {
 
         const data = await response.json();
 
+        console.log('📊 AudD.io response:', data);
+
         if (data.status === 'success' && data.result) {
+            console.log('✅ Song recognized!');
             return formatSongData(data.result);
         } else {
-            throw new Error(data.error?.error_message || 'Song not recognized');
+            const errorMsg = data.error?.error_message || 'Song not recognized';
+            console.error('❌ Recognition failed:', errorMsg);
+
+            // Provide helpful error messages
+            if (errorMsg.includes('audio')) {
+                throw new Error(
+                    'Could not extract audio from this Reel.\n\n' +
+                    'Try:\n' +
+                    '1. A different Instagram Reel\n' +
+                    '2. Downloading the Reel and uploading the audio file\n' +
+                    '3. Using Shazam or SoundHound on your phone'
+                );
+            }
+
+            throw new Error(errorMsg);
         }
     } catch (error) {
         console.error('Music recognition error:', error);
@@ -42,6 +61,8 @@ export async function recognizeSong(audioUrl) {
  */
 export async function recognizeSongFromFile(audioFile) {
     try {
+        console.log('🎵 Recognizing song from uploaded file:', audioFile.name);
+
         const formData = new FormData();
         formData.append('file', audioFile);
         formData.append('return', 'spotify,apple_music,deezer');
@@ -55,6 +76,7 @@ export async function recognizeSongFromFile(audioFile) {
         const data = await response.json();
 
         if (data.status === 'success' && data.result) {
+            console.log('✅ Song recognized from file!');
             return formatSongData(data.result);
         } else {
             throw new Error(data.error?.error_message || 'Song not recognized');
@@ -85,13 +107,4 @@ function formatSongData(result) {
             ? `https://www.youtube.com/results?search_query=${encodeURIComponent(result.artist + ' ' + result.title)}`
             : null
     };
-}
-
-/**
- * Alternative: Use Shazam API via RapidAPI (also free tier available)
- */
-export async function recognizeWithShazam(audioUrl) {
-    // This would require a RapidAPI key
-    // Implementation similar to above but with Shazam endpoint
-    throw new Error('Shazam integration not implemented yet');
 }

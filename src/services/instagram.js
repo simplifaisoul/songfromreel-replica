@@ -49,14 +49,10 @@ export async function fetchInstagramReel(url) {
 
         const data = await response.json();
 
+        // Even if it's a fallback, we'll try to use the URL with AudD.io
+        // AudD.io can sometimes extract audio from Instagram URLs directly
         if (data.fallback) {
-            // If using fallback, we need an alternative approach
-            throw new Error(
-                'Instagram API access is restricted. Please try:\n' +
-                '1. Using a different Reel URL\n' +
-                '2. Checking if the Reel is public\n' +
-                '3. Using a VPN if Instagram is blocking your region'
-            );
+            console.log('Using fallback method - will attempt direct URL recognition');
         }
 
         return data;
@@ -64,14 +60,15 @@ export async function fetchInstagramReel(url) {
         console.error('Instagram fetch error:', error);
 
         // Check if backend server is running
-        if (error.message.includes('fetch')) {
+        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
             throw new Error(
-                'Backend server not running! Please start it with:\n' +
+                'Cannot connect to backend server!\n\n' +
+                'Please make sure the backend is running:\n' +
                 'npm run server\n\n' +
                 'Then refresh and try again.'
             );
         }
 
-        throw new Error('Failed to fetch Instagram Reel. Make sure the Reel is public and the URL is correct.');
+        throw error;
     }
 }
