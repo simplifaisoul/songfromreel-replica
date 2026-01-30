@@ -1,0 +1,207 @@
+.results {
+    padding: var(--spacing-2xl) 0;
+}
+
+.results-card {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.results-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-md);
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    animation: scaleIn 0.5s ease-out;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+}
+
+.results-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.artwork-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.artwork {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    object-fit: cover;
+    position: relative;
+    z-index: 2;
+    box-shadow: var(--shadow-lg);
+    animation: scaleIn 0.6s ease-out 0.1s backwards;
+}
+
+.artwork-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(40px);
+    opacity: 0.4;
+    z-index: 1;
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+
+.song-info {
+    animation: fadeInUp 0.6s ease-out 0.2s backwards;
+}
+
+.song-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.song-artist {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.song-album {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.streaming-links {
+    animation: fadeInUp 0.6s ease-out 0.3s backwards;
+}
+
+.streaming-links h4 {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    font-weight: 500;
+}
+
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.streaming-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all var(--transition-base);
+    border: 2px solid transparent;
+}
+
+.streaming-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.streaming-btn.spotify {
+    background: #1DB954;
+    color: white;
+}
+
+.streaming-btn.spotify:hover {
+    background: #1ed760;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+}
+
+.streaming-btn.apple {
+    background: linear-gradient(135deg, #FA243C 0%, #FF6B6B 100%);
+    color: white;
+}
+
+.streaming-btn.apple:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(250, 36, 60, 0.4);
+}
+
+.streaming-btn.youtube {
+    background: #FF0000;
+    color: white;
+}
+
+.streaming-btn.youtube:hover {
+    background: #ff1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+}
+
+.streaming-btn.deezer {
+    background: linear-gradient(135deg, #FF0092 0%, #FF6B6B 100%);
+    color: white;
+}
+
+.streaming-btn.deezer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 146, 0.4);
+}
+
+.btn-reset {
+    max-width: 300px;
+    margin: var(--spacing-md) auto 0;
+    animation: fadeInUp 0.6s ease-out 0.4s backwards;
+}
+
+@media (max-width: 768px) {
+    .artwork-wrapper {
+        width: 250px;
+        height: 250px;
+    }
+
+    .song-title {
+        font-size: 1.5rem;
+    }
+
+    .song-artist {
+        font-size: 1.25rem;
+    }
+
+    .links-grid {
+        grid-template-columns: 1fr;
+    }
+}

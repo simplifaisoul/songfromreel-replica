@@ -1,0 +1,45 @@
+.app {
+  position: relative;
+  min-height: 100vh;
+}
+
+.error-banner {
+  padding: var(--spacing-lg) 0;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.error-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(10px);
+}
+
+.error-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.error-content h3 {
+  color: var(--error);
+  margin-bottom: var(--spacing-xs);
+  font-size: 1.25rem;
+}
+
+.error-content p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+@media (max-width: 768px) {
+  .error-content {
+    flex-direction: column;
+    padding: var(--spacing-md);
+  }
+}
