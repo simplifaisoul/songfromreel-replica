@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';
+import { scrapeInstagramReel } from './clawdbot.js';
 
 const app = express();
 const PORT = 3001;
@@ -27,16 +28,26 @@ app.post('/api/instagram', async (req, res) => {
         const reelId = reelIdMatch[1];
 
         console.log(`📥 Fetching Instagram Reel: ${reelId}`);
+        console.log(`🤖 Activating ClawdBot - Intelligent Instagram Scraper`);
 
-        // Method 1: Try using a free Instagram API service
+        // Method 1: Use ClawdBot (Puppeteer-based scraper)
         try {
-            const apiUrl = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${reelId}`;
+            const reelData = await scrapeInstagramReel(url);
 
-            // For demo purposes without RapidAPI key, we'll use an alternative free service
-            // Using insta-fetcher (a free npm package approach)
+            if (reelData.success) {
+                console.log('✅ ClawdBot successfully scraped the Reel!');
+                return res.json(reelData);
+            }
+        } catch (clawdError) {
+            console.log('⚠️  ClawdBot failed:', clawdError.message);
+            console.log('🔄 Trying fallback methods...');
+        }
+
+        // Method 2: Try using Instagram's API directly
+        try {
             const alternativeUrl = `https://www.instagram.com/p/${reelId}/?__a=1`;
 
-            console.log('🔄 Attempting to fetch from Instagram...');
+            console.log('🔄 Attempting direct API fetch...');
 
             const response = await fetch(alternativeUrl, {
                 headers: {
@@ -69,14 +80,13 @@ app.post('/api/instagram', async (req, res) => {
                 }
             }
         } catch (error) {
-            console.log('⚠️  Method 1 failed:', error.message);
+            console.log('⚠️  Method 2 failed:', error.message);
         }
 
-        // Method 2: Use a public Instagram downloader service
+        // Method 3: Use oEmbed API
         try {
-            console.log('🔄 Trying alternative method...');
+            console.log('🔄 Trying oEmbed method...');
 
-            // Using a free public API (no auth required)
             const downloaderUrl = `https://api.instagram.com/oembed/?url=https://www.instagram.com/p/${reelId}/`;
 
             const response = await fetch(downloaderUrl);
@@ -85,7 +95,6 @@ app.post('/api/instagram', async (req, res) => {
                 const data = await response.json();
                 console.log('✅ Got data from oembed');
 
-                // oEmbed doesn't provide video URL, but we can construct it
                 return res.json({
                     videoUrl: `https://www.instagram.com/p/${reelId}/`,
                     audioUrl: `https://www.instagram.com/p/${reelId}/`,
@@ -95,17 +104,17 @@ app.post('/api/instagram', async (req, res) => {
                 });
             }
         } catch (error) {
-            console.log('⚠️  Method 2 failed:', error.message);
+            console.log('⚠️  Method 3 failed:', error.message);
         }
 
-        // Method 3: Return the Instagram URL for client-side handling
-        console.log('⚠️  All methods failed, returning fallback');
+        // Final fallback
+        console.log('⚠️  All methods failed (including ClawdBot), returning fallback');
 
         return res.json({
             videoUrl: `https://www.instagram.com/p/${reelId}/`,
             audioUrl: `https://www.instagram.com/p/${reelId}/`,
             fallback: true,
-            message: 'Instagram API is restricted. The app will attempt to use the Reel URL directly with AudD.io'
+            message: 'ClawdBot and all fallback methods failed. Instagram API is heavily restricted.'
         });
 
     } catch (error) {
@@ -125,5 +134,6 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Instagram proxy server running on http://localhost:${PORT}`);
     console.log(`📡 Frontend should connect to: http://localhost:${PORT}/api/instagram`);
-    console.log(`💡 Tip: This server bypasses CORS restrictions for Instagram API calls`);
+    console.log(`🤖 ClawdBot AI Agent: ACTIVE - Intelligent Instagram scraping enabled`);
+    console.log(`💡 Tip: ClawdBot uses Puppeteer to bypass Instagram restrictions`);
 });
